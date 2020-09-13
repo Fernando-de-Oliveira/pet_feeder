@@ -3,16 +3,25 @@
 import json
 from sender import Sender
 from reader import Reader
+import logging
+
 
 PORT = '/dev/ttyUSB0'
 BAUD = 9600
 
 reader = Reader(port=PORT, baud=BAUD)
 sender = Sender(port=PORT, baud=BAUD)
+index = int(0)
+
 
 while(1):
     presence = json.loads(reader.getData())['presence']
 
-    if(presence == True):
+    if((presence == True) and (index < 2)):
         sender.alimentar()
-        print('PET ALIMENTADO.\n')
+        logging.info('PET ALIMENTADO.\n')
+        index += 1
+
+    if (index == 2):
+        time.sleep(3600)
+        index = int(0)
